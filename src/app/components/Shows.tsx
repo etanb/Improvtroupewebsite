@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Calendar, MapPin, DollarSign } from "lucide-react";
 
 const upcomingShows = [
@@ -42,7 +43,15 @@ const pastShows = [
   },
 ];
 
+// Sort by date ascending, cap at 3
+const sortedUpcoming = [...upcomingShows]
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  .slice(0, 3);
+
 export function Shows() {
+  const [next, second, third] = sortedUpcoming;
+  const [hovered, setHovered] = useState(false);
+
   return (
     <section id="shows" className="py-16 md:py-24 bg-muted/30">
       <div className="max-w-6xl mx-auto px-6">
@@ -50,54 +59,110 @@ export function Shows() {
           <h2 className="text-4xl md:text-5xl font-bold">Our Shows</h2>
         </div>
 
+        {/* Coming Up */}
         <div className="mb-16">
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-4">
             <div className="bg-accent px-4 py-2 border-4 border-primary">
               <h3 className="text-2xl md:text-3xl font-bold">Coming Up</h3>
             </div>
             <div className="h-1 flex-1 bg-primary"></div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {upcomingShows.map((show) => (
+          {/*
+            Stack: the second card lives BEHIND the front card (lower z-index).
+            Its bottom portion is hidden behind the front card; its top 60px peeks above.
+            Hovering that peek slides the whole card up to reveal it fully.
+            Mouse-leave slides it back under.
+            marginTop creates the visual room for the peek strip.
+          */}
+          <div className="relative" style={{ marginTop: second ? "60px" : "0" }}>
+
+            {/* Second card — peeks 60px above the front card's top edge */}
+            {second && (
               <div
-                key={show.id}
-                className="bg-white border-4 border-primary p-6 transform hover:-rotate-1 transition-transform"
+                style={{
+                  position: "absolute",
+                  top: "-60px",
+                  left: "8px",
+                  right: "8px",
+                  zIndex: 20,
+                  transform: hovered
+                    ? "translateY(calc(-100% + 60px)) rotate(-1.5deg)"
+                    : "rotate(-1.5deg)",
+                  transition: "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease",
+                  boxShadow: hovered ? "6px 6px 0px 0px #1a1a1a" : "2px 2px 0px 0px rgba(0,0,0,0.15)",
+                }}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
               >
-                <div className="flex items-start gap-3 mb-3">
-                  <Calendar className="text-destructive mt-1" size={24} />
-                  <div>
-                    <div className="text-2xl font-bold">{show.date}</div>
-                    <div className="text-lg">{show.time}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 mb-3">
-                  <MapPin className="text-destructive mt-1" size={24} />
-                  <div>
-                    <div className="text-xl font-bold">{show.venue}</div>
-                    <div className="text-muted-foreground">{show.address}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 mb-4">
-                  <DollarSign className="text-destructive mt-1" size={24} />
-                  <div className="text-lg">{show.price}</div>
-                </div>
-
-                <div className="border-t-2 border-primary pt-4">
-                  <div className="text-sm mb-2 text-destructive font-bold">w/</div>
-                  {show.guests.map((guest, idx) => (
-                    <div key={idx} className="text-sm mb-1">
-                      - {guest}
+                <a href="https://dice.fm/" target="_blank" rel="noopener noreferrer" className="block bg-white border-4 border-primary cursor-pointer">
+                  {/* Peek strip — always visible, shows date + venue */}
+                  <div className="px-5 pt-4 pb-3">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="text-destructive shrink-0" size={18} />
+                      <span className="text-lg font-bold">{second.date}</span>
+                      <span className="text-sm text-muted-foreground ml-1">{second.time}</span>
                     </div>
+                    <div className="flex items-center gap-2 mt-1 ml-7">
+                      <span className="text-sm font-bold">{second.venue}</span>
+                    </div>
+                  </div>
+                  {/* Rest of card — hidden behind front card at rest, revealed on hover */}
+                  <div className="px-5 pb-4 border-t-2 border-primary/20 pt-3">
+                    <div className="flex items-start gap-3 mb-2">
+                      <MapPin className="text-destructive mt-0.5 shrink-0" size={16} />
+                      <div className="text-sm text-muted-foreground">{second.address}</div>
+                    </div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <DollarSign className="text-destructive shrink-0" size={16} />
+                      <span className="text-sm font-bold">{second.price}</span>
+                    </div>
+                    <div className="border-t-2 border-primary pt-3">
+                      <span className="text-xs text-destructive font-bold mr-2">w/</span>
+                      {second.guests.map((g, i) => (
+                        <span key={i} className="text-xs after:content-['_·_'] last:after:content-none">{g}</span>
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              </div>
+            )}
+
+            {/* Front card — next show, sits in front (z:30 covers the second card) */}
+            {next && (
+              <a href="https://dice.fm/" target="_blank" rel="noopener noreferrer" className="relative block bg-white border-4 border-primary p-6 md:p-8 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] transition-all duration-150" style={{ zIndex: 30 }}>
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    <Calendar className="text-destructive mt-1 shrink-0" size={28} />
+                    <div>
+                      <div className="text-3xl md:text-4xl font-bold">{next.date}</div>
+                      <div className="text-xl mt-1">{next.time}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin className="text-destructive mt-1 shrink-0" size={22} />
+                    <div>
+                      <div className="text-2xl font-bold">{next.venue}</div>
+                      <div className="text-muted-foreground">{next.address}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-lg font-bold">
+                    <DollarSign className="text-destructive shrink-0" size={22} />
+                    {next.price}
+                  </div>
+                </div>
+                <div className="border-t-2 border-primary mt-5 pt-4">
+                  <span className="text-sm text-destructive font-bold mr-2">w/</span>
+                  {next.guests.map((g, i) => (
+                    <span key={i} className="text-sm after:content-['_·_'] last:after:content-none">{g}</span>
                   ))}
                 </div>
-              </div>
-            ))}
+              </a>
+            )}
           </div>
         </div>
 
+        {/* Past Shows */}
         <div>
           <div className="flex items-center gap-4 mb-8">
             <div className="bg-secondary px-4 py-2 border-4 border-primary">
@@ -108,23 +173,25 @@ export function Shows() {
 
           <div className="grid md:grid-cols-3 gap-4">
             {pastShows.map((show) => (
-              <div
+              <a
                 key={show.id}
-                className="bg-white border-4 border-primary p-4"
+                href="https://dice.fm/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-white border-4 border-primary p-4 transform hover:rotate-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#000] transition-all duration-150"
               >
                 <div className="text-lg font-bold mb-2">{show.date}</div>
                 <div className="text-sm text-muted-foreground mb-3">{show.venue}</div>
                 <div className="text-sm">
                   {show.guests.map((guest, idx) => (
-                    <div key={idx} className="mb-1">
-                      - {guest}
-                    </div>
+                    <div key={idx} className="mb-1">- {guest}</div>
                   ))}
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
+
       </div>
     </section>
   );

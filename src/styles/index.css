@@ -1,3 +1,67 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* Smooth elliptical arcs — each orbit is a tilted oval */
+@keyframes arc-1 {
+  0%   { transform: translate(80px,   0px)  rotate(0deg);   }
+  25%  { transform: translate(20px, -45px)  rotate(90deg);  }
+  50%  { transform: translate(-80px,  0px)  rotate(180deg); }
+  75%  { transform: translate(-20px, 45px)  rotate(270deg); }
+  100% { transform: translate(80px,   0px)  rotate(360deg); }
+}
+
+@keyframes arc-2 {
+  0%   { transform: translate(-60px, 30px)  rotate(0deg);   }
+  25%  { transform: translate(30px,  70px)  rotate(-90deg); }
+  50%  { transform: translate(90px, -10px)  rotate(-180deg);}
+  75%  { transform: translate(0px,  -60px)  rotate(-270deg);}
+  100% { transform: translate(-60px, 30px)  rotate(-360deg);}
+}
+
+@keyframes arc-3 {
+  0%   { transform: translate(0px,  -50px)  rotate(0deg);   }
+  25%  { transform: translate(100px, 10px)  rotate(90deg);  }
+  50%  { transform: translate(0px,   50px)  rotate(180deg); }
+  75%  { transform: translate(-100px,-10px) rotate(270deg); }
+  100% { transform: translate(0px,  -50px)  rotate(360deg); }
+}
+
+@keyframes arc-4 {
+  0%   { transform: translate(50px,  50px)  rotate(0deg);   }
+  25%  { transform: translate(-40px, 70px)  rotate(-90deg); }
+  50%  { transform: translate(-70px,-20px)  rotate(-180deg);}
+  75%  { transform: translate(30px, -60px)  rotate(-270deg);}
+  100% { transform: translate(50px,  50px)  rotate(-360deg);}
+}
+
+@keyframes arc-5 {
+  0%   { transform: translate(-80px,-20px)  rotate(0deg);   }
+  25%  { transform: translate(-10px, 55px)  rotate(90deg);  }
+  50%  { transform: translate(70px,  10px)  rotate(180deg); }
+  75%  { transform: translate(10px, -55px)  rotate(270deg); }
+  100% { transform: translate(-80px,-20px)  rotate(360deg); }
+}
+
+.star-swoop-1 { animation: arc-1 12s linear infinite; }
+.star-swoop-2 { animation: arc-2 16s linear infinite; animation-delay: -5s; }
+.star-swoop-3 { animation: arc-3 10s linear infinite; animation-delay: -3s; }
+.star-swoop-4 { animation: arc-4 14s linear infinite; animation-delay: -8s; }
+.star-swoop-5 { animation: arc-5 18s linear infinite; animation-delay: -2s; }
+
+/* Hero image float animations */
+@keyframes img-float-1 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes img-float-2 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes img-float-3 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-13px); }
+}
+.img-float-1 { animation: img-float-1 3.4s ease-in-out infinite; }
+.img-float-2 { animation: img-float-2 4.1s ease-in-out infinite; animation-delay: -1.5s; }
+.img-float-3 { animation: img-float-3 2.9s ease-in-out infinite; animation-delay: -0.8s; }

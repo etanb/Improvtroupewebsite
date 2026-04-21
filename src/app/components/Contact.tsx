@@ -91,7 +91,7 @@ export function Contact() {
 
             <button
               type="submit"
-              className="bg-destructive text-destructive-foreground px-8 py-4 border-4 border-primary transform -rotate-1 hover:rotate-0 transition-transform flex items-center gap-2"
+              className="bg-destructive text-destructive-foreground px-8 py-4 border-4 border-primary transform -rotate-1 hover:rotate-0 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] active:translate-y-0 active:shadow-none transition-all duration-150 flex items-center gap-2 cursor-pointer"
             >
               <Send size={20} />
               Send Message
