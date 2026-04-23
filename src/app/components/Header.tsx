@@ -1,6 +1,11 @@
-import { Instagram, Mail } from "lucide-react";
+import { Instagram } from "lucide-react";
 
 export function Header() {
+  const scrollTo = (id: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <header className="border-b-4 border-primary bg-background sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -12,10 +17,10 @@ export function Header() {
         </div>
 
         <nav className="flex items-center gap-6">
-          <a href="#shows" className="hover:text-destructive transition-colors">
+          <a href="#shows" onClick={scrollTo("shows")} className="hover:text-destructive transition-colors">
             Shows
           </a>
-          <a href="#contact" className="hover:text-destructive transition-colors">
+          <a href="#contact" onClick={scrollTo("contact")} className="hover:text-destructive transition-colors">
             Contact
           </a>
           <div className="flex gap-3 ml-2">
@@ -26,12 +31,6 @@ export function Header() {
               className="hover:text-destructive transition-colors"
             >
               <Instagram size={20} />
-            </a>
-            <a
-              href="mailto:hello@lateforwork.improv"
-              className="hover:text-destructive transition-colors"
-            >
-              <Mail size={20} />
             </a>
           </div>
         </nav>

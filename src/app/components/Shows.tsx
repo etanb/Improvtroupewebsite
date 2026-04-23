@@ -1,55 +1,32 @@
 import { useState } from "react";
-import { Calendar, MapPin, DollarSign } from "lucide-react";
+import { Calendar, MapPin, ArrowRight } from "lucide-react";
+import allShows from "../../data/shows.json";
 
-const upcomingShows = [
-  {
-    id: 1,
-    date: "May 15, 2026",
-    time: "7:30 PM",
-    venue: "Black Lodge",
-    address: "429 Eastlake Ave E",
-    price: "$10 cover on DICE",
-    guests: ["Stay Silly", "Certified Nonsense: A Clown Collective", "a Laure Yamagawa sketch"],
-  },
-  {
-    id: 2,
-    date: "June 8, 2026",
-    time: "8:00 PM",
-    venue: "The Comedy Underground",
-    address: "109 S Washington St",
-    price: "$12 at the door",
-    guests: ["Improv Friends", "The Silly Squad"],
-  },
-];
+// Split and sort based on today's date
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
-const pastShows = [
-  {
-    id: 1,
-    date: "March 9, 2026",
-    venue: "Black Lodge",
-    guests: ["Jone Dehuff", "ABC&D Improv", "a Laure Yamagawa sketch"],
-  },
-  {
-    id: 2,
-    date: "February 9, 2026",
-    venue: "Black Lodge",
-    guests: ["Stay Silly", "Certified Nonsense: A Clown Collective", "a Laure Yamagawa sketch"],
-  },
-  {
-    id: 3,
-    date: "January 12, 2026",
-    venue: "The Pocket Theater",
-    guests: ["Wild Card Improv", "The Comedy Collective"],
-  },
-];
-
-// Sort by date ascending, cap at 3
-const sortedUpcoming = [...upcomingShows]
+const upcomingShows = allShows
+  .filter((s) => new Date(s.date) >= today)
   .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  .slice(0, 3);
+  .slice(0, 2);
+
+const pastShows = allShows
+  .filter((s) => new Date(s.date) < today)
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .slice(0, 6);
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export function Shows() {
-  const [next, second, third] = sortedUpcoming;
+  const [next, second] = upcomingShows;
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -68,16 +45,9 @@ export function Shows() {
             <div className="h-1 flex-1 bg-primary"></div>
           </div>
 
-          {/*
-            Stack: the second card lives BEHIND the front card (lower z-index).
-            Its bottom portion is hidden behind the front card; its top 60px peeks above.
-            Hovering that peek slides the whole card up to reveal it fully.
-            Mouse-leave slides it back under.
-            marginTop creates the visual room for the peek strip.
-          */}
           <div className="relative" style={{ marginTop: second ? "60px" : "0" }}>
 
-            {/* Second card — peeks 60px above the front card's top edge */}
+            {/* Second card — peeks 60px above the front card */}
             {second && (
               <div
                 style={{
@@ -95,61 +65,72 @@ export function Shows() {
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
               >
-                <a href="https://dice.fm/" target="_blank" rel="noopener noreferrer" className="block bg-white border-4 border-primary cursor-pointer">
-                  {/* Peek strip — always visible, shows date + venue */}
+                <a
+                  href={second.ticketUrl || undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-white border-4 border-primary cursor-pointer"
+                >
+                  {/* Peek strip */}
                   <div className="px-5 pt-4 pb-3">
                     <div className="flex items-center gap-3">
                       <Calendar className="text-destructive shrink-0" size={18} />
-                      <span className="text-lg font-bold">{second.date}</span>
-                      <span className="text-sm text-muted-foreground ml-1">{second.time}</span>
+                      <span className="text-lg font-bold">{formatDate(second.date)}</span>
+                      {second.time && (
+                        <span className="text-sm text-muted-foreground ml-1">{second.time}</span>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 mt-1 ml-7">
+                      <MapPin className="text-destructive shrink-0" size={14} />
                       <span className="text-sm font-bold">{second.venue}</span>
                     </div>
                   </div>
-                  {/* Rest of card — hidden behind front card at rest, revealed on hover */}
+                  {/* Rest of card */}
                   <div className="px-5 pb-4 border-t-2 border-primary/20 pt-3">
-                    <div className="flex items-start gap-3 mb-2">
-                      <MapPin className="text-destructive mt-0.5 shrink-0" size={16} />
-                      <div className="text-sm text-muted-foreground">{second.address}</div>
-                    </div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <DollarSign className="text-destructive shrink-0" size={16} />
-                      <span className="text-sm font-bold">{second.price}</span>
-                    </div>
-                    <div className="border-t-2 border-primary pt-3">
-                      <span className="text-xs text-destructive font-bold mr-2">w/</span>
-                      {second.guests.map((g, i) => (
-                        <span key={i} className="text-xs after:content-['_·_'] last:after:content-none">{g}</span>
-                      ))}
+                    <div className="border-t-2 border-primary pt-3 flex items-center justify-between">
+                      <div>
+                        <span className="text-xs text-destructive font-bold mr-2">w/</span>
+                        {second.guests.map((g, i) => (
+                          <span key={i} className="text-xs after:content-['_·_'] last:after:content-none">{g}</span>
+                        ))}
+                      </div>
+                      {second.ticketUrl && (
+                        <span className="ml-4 shrink-0 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 border-2 border-primary flex items-center gap-1">
+                          tickets <ArrowRight size={12} />
+                        </span>
+                      )}
                     </div>
                   </div>
                 </a>
               </div>
             )}
 
-            {/* Front card — next show, sits in front (z:30 covers the second card) */}
+            {/* Front card — next show */}
             {next && (
-              <a href="https://dice.fm/" target="_blank" rel="noopener noreferrer" className="relative block bg-white border-4 border-primary p-6 md:p-8 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] transition-all duration-150" style={{ zIndex: 30 }}>
+              <a
+                href={next.ticketUrl || undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative block bg-white border-4 border-primary p-6 md:p-8 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] transition-all duration-150"
+                style={{ zIndex: 30 }}
+              >
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex items-start gap-4">
                     <Calendar className="text-destructive mt-1 shrink-0" size={28} />
                     <div>
-                      <div className="text-3xl md:text-4xl font-bold">{next.date}</div>
-                      <div className="text-xl mt-1">{next.time}</div>
+                      <div className="text-3xl md:text-4xl font-bold">{formatDate(next.date)}</div>
+                      {next.time && <div className="text-xl mt-1">{next.time}</div>}
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <MapPin className="text-destructive mt-1 shrink-0" size={22} />
-                    <div>
-                      <div className="text-2xl font-bold">{next.venue}</div>
-                      <div className="text-muted-foreground">{next.address}</div>
+                    <div className="text-2xl font-bold">{next.venue}</div>
+                  </div>
+                  {next.ticketUrl && (
+                    <div className="flex items-center gap-2 bg-destructive text-destructive-foreground px-4 py-2 border-4 border-primary font-bold text-lg self-start">
+                      get tickets <ArrowRight size={20} />
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-lg font-bold">
-                    <DollarSign className="text-destructive shrink-0" size={22} />
-                    {next.price}
-                  </div>
+                  )}
                 </div>
                 <div className="border-t-2 border-primary mt-5 pt-4">
                   <span className="text-sm text-destructive font-bold mr-2">w/</span>
@@ -159,38 +140,45 @@ export function Shows() {
                 </div>
               </a>
             )}
+
+            {!next && (
+              <div className="bg-white border-4 border-primary p-8 text-center text-muted-foreground text-lg">
+                No upcoming shows right now — check back soon!
+              </div>
+            )}
           </div>
         </div>
 
         {/* Past Shows */}
-        <div>
-          <div className="flex items-center gap-4 mb-8">
-            <div className="bg-secondary px-4 py-2 border-4 border-primary">
-              <h3 className="text-2xl md:text-3xl font-bold">Past Shows</h3>
+        {pastShows.length > 0 && (
+          <div>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="bg-secondary px-4 py-2 border-4 border-primary">
+                <h3 className="text-2xl md:text-3xl font-bold">Past Shows</h3>
+              </div>
+              <div className="h-1 flex-1 bg-primary"></div>
             </div>
-            <div className="h-1 flex-1 bg-primary"></div>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-4">
-            {pastShows.map((show) => (
-              <a
-                key={show.id}
-                href="https://dice.fm/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block bg-white border-4 border-primary p-4 transform hover:rotate-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#000] transition-all duration-150"
-              >
-                <div className="text-lg font-bold mb-2">{show.date}</div>
-                <div className="text-sm text-muted-foreground mb-3">{show.venue}</div>
-                <div className="text-sm">
-                  {show.guests.map((guest, idx) => (
-                    <div key={idx} className="mb-1">- {guest}</div>
-                  ))}
-                </div>
-              </a>
-            ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {pastShows.map((show, idx) => (
+                <a
+                  key={idx}
+                  href={show.ticketUrl || undefined}
+                  target={show.ticketUrl ? "_blank" : undefined}
+                  rel={show.ticketUrl ? "noopener noreferrer" : undefined}
+                  className="block bg-white border-4 border-primary p-4 transform hover:rotate-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#000] transition-all duration-150"
+                >
+                  <div className="text-lg font-bold mb-2">{formatDate(show.date)}</div>
+                  <div className="text-sm font-bold text-muted-foreground mb-3">{show.venue}</div>
+                  <div className="text-sm">
+                    <span className="text-destructive font-bold mr-1">w/</span>
+                    {show.guests.join(" · ")}
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </section>
