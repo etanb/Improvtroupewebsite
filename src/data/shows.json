@@ -1,37 +1,51 @@
 [
   {
-    "date": "2026-05-15",
-    "time": "7:30 PM",
+    "date": "2026-05-11",
+    "time": "6:30 PM",
     "venue": "Black Lodge",
-    "ticketUrl": "https://dice.fm/",
-    "guests": ["Stay Silly", "Certified Nonsense: A Clown Collective", "a Laure Yamagawa sketch"]
+    "ticketUrl": "https://theveraproject.org/events/",
+    "guests": ["Regis Dudley", "Just Happy to Be Here", "Laure Yamagawa", "OLD AF"]
   },
   {
-    "date": "2026-06-08",
-    "time": "8:00 PM",
-    "venue": "The Comedy Underground",
-    "ticketUrl": "https://dice.fm/",
-    "guests": ["Improv Friends", "The Silly Squad"]
+    "date": "2026-04-13",
+    "time": "7:00 PM",
+    "venue": "Black Lodge",
+    "ticketUrl": "",
+    "guests": ["Hopscotch Improv", "Improv 9000", "Laure Yamagawa"]
+  },
+  {
+    "date": "2026-03-27",
+    "time": "7:00 PM",
+    "venue": "Seattle Open Arts Place",
+    "ticketUrl": "",
+    "guests": ["OLD AF"]
+  },
+  {
+    "date": "2026-03-13",
+    "time": "7:30 PM",
+    "venue": "The Drama Room",
+    "ticketUrl": "",
+    "guests": ["Just Happy to Be Here", "Unidentified Female Object", "They Might Be Ghosts"]
   },
   {
     "date": "2026-03-09",
-    "time": "",
+    "time": "7:00 PM",
     "venue": "Black Lodge",
     "ticketUrl": "",
-    "guests": ["Jone Dehuff", "ABC&D Improv", "a Laure Yamagawa sketch"]
+    "guests": ["Jone Dehuff", "ABC&D Improv", "Laure Yamagawa"]
+  },
+  {
+    "date": "2026-02-22",
+    "time": "7:00 PM",
+    "venue": "Vermillion Art Gallery and Bar",
+    "ticketUrl": "",
+    "guests": ["Dollbrick"]
   },
   {
     "date": "2026-02-09",
-    "time": "",
+    "time": "7:30 PM",
     "venue": "Black Lodge",
     "ticketUrl": "",
-    "guests": ["Stay Silly", "Certified Nonsense: A Clown Collective", "a Laure Yamagawa sketch"]
-  },
-  {
-    "date": "2026-01-12",
-    "time": "",
-    "venue": "The Pocket Theater",
-    "ticketUrl": "",
-    "guests": ["Wild Card Improv", "The Comedy Collective"]
+    "guests": ["Stay Silly", "Certified Nonsense: A Clown Collective", "Laure Yamagawa"]
   }
 ]

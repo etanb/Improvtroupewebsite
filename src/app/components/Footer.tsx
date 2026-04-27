@@ -1,4 +1,4 @@
-import { Instagram, Mail } from "lucide-react";
+import { Instagram } from "lucide-react";
 
 export function Footer() {
   return (
@@ -25,18 +25,11 @@ export function Footer() {
               <Instagram size={20} />
               <span>@late.for.work.improv</span>
             </a>
-            <a
-              href="mailto:hello@lateforwork.improv"
-              className="flex items-center gap-2 hover:text-destructive transition-colors"
-            >
-              <Mail size={20} />
-              <span>Email Us</span>
-            </a>
           </div>
         </div>
 
         <div className="text-center mt-8 text-sm text-muted-foreground">
-          © 2026 Late For Work Improv. Stay silly!
+          © 2026 Late For Work Improv.
         </div>
       </div>
     </footer>

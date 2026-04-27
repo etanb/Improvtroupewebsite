@@ -65,3 +65,56 @@
 .img-float-1 { animation: img-float-1 3.4s ease-in-out infinite; }
 .img-float-2 { animation: img-float-2 4.1s ease-in-out infinite; animation-delay: -1.5s; }
 .img-float-3 { animation: img-float-3 2.9s ease-in-out infinite; animation-delay: -0.8s; }
+
+/* Ticket button — letter wave */
+@keyframes letterWave {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%       { transform: scale(1.35) translateY(-2px); }
+}
+
+/* Ticket button — arrow grows then blasts off */
+@keyframes arrowBlast {
+  0%   { transform: scale(1);   opacity: 1; }
+  35%  { transform: scale(2.6); opacity: 1; }
+  100% { transform: translateX(80px) scale(2); opacity: 0; }
+}
+
+.ticket-letter {
+  display: inline-block;
+}
+
+.ticket-arrow {
+  display: inline-flex;
+}
+
+.ticket-btn:hover .ticket-letter {
+  animation: letterWave 0.12s ease-in-out both;
+}
+
+.ticket-btn:hover .ticket-arrow {
+  animation: arrowBlast 0.4s ease-in both;
+  animation-delay: 0.42s;
+}
+
+/* Fire particles — erupt from arrow butt */
+@keyframes fire1 { 0% { transform: translate(0,-50%) scale(1.2); opacity:1; } 100% { transform: translate(-44px,calc(-50% - 18px)) scale(0.2); opacity:0; } }
+@keyframes fire2 { 0% { transform: translate(0,-50%) scale(1);   opacity:1; } 100% { transform: translate(-28px,calc(-50% - 38px)) scale(0.1); opacity:0; } }
+@keyframes fire3 { 0% { transform: translate(0,-50%) scale(1.1); opacity:1; } 100% { transform: translate(-50px,calc(-50% + 2px))  scale(0.2); opacity:0; } }
+@keyframes fire4 { 0% { transform: translate(0,-50%) scale(0.9); opacity:1; } 100% { transform: translate(-38px,calc(-50% + 22px)) scale(0.15); opacity:0; } }
+@keyframes fire5 { 0% { transform: translate(0,-50%) scale(1);   opacity:1; } 100% { transform: translate(-20px,calc(-50% + 40px)) scale(0.1); opacity:0; } }
+
+.ticket-fire {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ticket-btn:hover .fire-1 { animation: fire1 0.38s ease-out forwards; animation-delay: 0.43s; }
+.ticket-btn:hover .fire-2 { animation: fire2 0.32s ease-out forwards; animation-delay: 0.45s; }
+.ticket-btn:hover .fire-3 { animation: fire3 0.40s ease-out forwards; animation-delay: 0.42s; }
+.ticket-btn:hover .fire-4 { animation: fire4 0.34s ease-out forwards; animation-delay: 0.44s; }
+.ticket-btn:hover .fire-5 { animation: fire5 0.30s ease-out forwards; animation-delay: 0.46s; }

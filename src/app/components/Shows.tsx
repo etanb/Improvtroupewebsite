@@ -127,8 +127,28 @@ export function Shows() {
                     <div className="text-2xl font-bold">{next.venue}</div>
                   </div>
                   {next.ticketUrl && (
-                    <div className="flex items-center gap-2 bg-destructive text-destructive-foreground px-4 py-2 border-4 border-primary font-bold text-lg self-start">
-                      get tickets <ArrowRight size={20} />
+                    <div className="ticket-btn flex items-center gap-1 bg-destructive text-destructive-foreground px-4 py-2 border-4 border-primary font-bold text-lg self-start">
+                      {"get tickets".split("").map((char, i) =>
+                        char === " " ? (
+                          <span key={i}>&nbsp;</span>
+                        ) : (
+                          <span
+                            key={i}
+                            className="ticket-letter"
+                            style={{ animationDelay: `${i * 0.03}s` }}
+                          >
+                            {char}
+                          </span>
+                        )
+                      )}
+                      <span className="relative ml-1 inline-flex items-center" style={{ overflow: "visible" }}>
+                        <span className="ticket-arrow inline-flex"><ArrowRight size={20} /></span>
+                        <span className="ticket-fire fire-1" aria-hidden="true">🔥</span>
+                        <span className="ticket-fire fire-2" aria-hidden="true">🔥</span>
+                        <span className="ticket-fire fire-3" aria-hidden="true">🔥</span>
+                        <span className="ticket-fire fire-4" aria-hidden="true">🔥</span>
+                        <span className="ticket-fire fire-5" aria-hidden="true">🔥</span>
+                      </span>
                     </div>
                   )}
                 </div>

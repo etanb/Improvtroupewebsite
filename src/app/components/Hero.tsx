@@ -15,6 +15,7 @@ interface BeholdPost {
   thumbnailUrl?: string;
   permalink: string;
   caption?: string;
+  timestamp: string;
 }
 
 function getTransform(i: number, hovered: number | null, rot: string) {
@@ -32,7 +33,10 @@ export function Hero() {
     fetch(BEHOLD_URL)
       .then((r) => r.json())
       .then((data: { posts: BeholdPost[] }) => {
-        const top3 = data.posts.slice(0, 3).map((p) => ({
+        const top3 = [...data.posts]
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+          .slice(0, 3)
+          .map((p) => ({
           src: p.mediaType === "VIDEO" ? (p.thumbnailUrl ?? p.mediaUrl) : p.mediaUrl,
           alt: p.caption ? p.caption.slice(0, 80) : "Late for Work on Instagram",
           permalink: p.permalink,
