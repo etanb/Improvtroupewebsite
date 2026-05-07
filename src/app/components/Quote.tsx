@@ -38,11 +38,13 @@ export function Quote() {
       .then((r) => r.json())
       .then((data: { records: AirtableRecord[] }) => {
         if (!data.records?.length) return;
-        const latest = data.records
+        const valid = data.records
           .filter((r) => r.fields.Subject && r.fields.Name)
-          .sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime())[0];
-        if (latest) {
-          setQuote({ text: latest.fields.Subject!, author: latest.fields.Name! });
+          .sort((a, b) => new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime());
+        if (valid.length) {
+          const dayIndex = Math.floor(Date.now() / 86400000) % valid.length;
+          const picked = valid[dayIndex];
+          setQuote({ text: picked.fields.Subject!, author: picked.fields.Name! });
         }
       })
       .catch(() => {});
