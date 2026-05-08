@@ -71,35 +71,45 @@ export function Shows() {
                   rel="noopener noreferrer"
                   className="block bg-white border-4 border-primary cursor-pointer"
                 >
-                  {/* Peek strip */}
-                  <div className="px-5 pt-4 pb-3">
-                    <div className="flex items-center gap-3">
-                      <Calendar className="text-destructive shrink-0" size={18} />
-                      <span className="text-lg font-bold">{formatDate(second.date)}</span>
-                      {second.time && (
-                        <span className="text-sm text-muted-foreground ml-1">{second.time}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 ml-7">
-                      <MapPin className="text-destructive shrink-0" size={14} />
-                      <span className="text-sm font-bold">{second.venue}</span>
-                    </div>
-                  </div>
-                  {/* Rest of card */}
-                  <div className="px-5 pb-4 border-t-2 border-primary/20 pt-3">
-                    <div className="border-t-2 border-primary pt-3 flex items-center justify-between">
-                      <div>
-                        <span className="text-xs text-destructive font-bold mr-2">w/</span>
-                        {second.guests.map((g, i) => (
-                          <span key={i} className="text-xs after:content-['_·_'] last:after:content-none">{g}</span>
-                        ))}
+                  <div className="p-5 flex flex-col gap-3">
+                    <div className="flex flex-row items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <Calendar className="text-destructive mt-1 shrink-0" size={21} />
+                        <div>
+                          <div className="text-2xl md:text-3xl font-bold">{formatDate(second.date)}</div>
+                          {second.time && <div className="text-base mt-1">{second.time}</div>}
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <MapPin className="text-destructive mt-1 shrink-0" size={17} />
+                        <div className="text-xl font-bold">{second.venue}</div>
                       </div>
                       {second.ticketUrl && (
-                        <span className="ml-4 shrink-0 bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 border-2 border-primary flex items-center gap-1">
-                          tickets <ArrowRight size={12} />
-                        </span>
+                        <div className="ticket-btn flex items-center gap-1 bg-destructive text-destructive-foreground px-3 py-1.5 border-4 border-primary font-bold text-sm self-start shrink-0">
+                          {"tickets".split("").map((char, i) => (
+                            <span key={i} className="ticket-letter" style={{ animationDelay: `${i * 0.03}s` }}>
+                              {char}
+                            </span>
+                          ))}
+                          <span className="relative ml-1 inline-flex items-center" style={{ overflow: "visible" }}>
+                            <span className="ticket-arrow inline-flex"><ArrowRight size={15} /></span>
+                            <span className="ticket-fire fire-1" aria-hidden="true">🔥</span>
+                            <span className="ticket-fire fire-2" aria-hidden="true">🔥</span>
+                            <span className="ticket-fire fire-3" aria-hidden="true">🔥</span>
+                            <span className="ticket-fire fire-4" aria-hidden="true">🔥</span>
+                            <span className="ticket-fire fire-5" aria-hidden="true">🔥</span>
+                          </span>
+                        </div>
                       )}
                     </div>
+                    {second.guests.length > 0 && (
+                      <div className="border-t-2 border-primary pt-4">
+                        <span className="text-sm text-destructive font-bold mr-2">w/</span>
+                        {second.guests.map((g, i) => (
+                          <span key={i} className="text-sm after:content-['_·_'] last:after:content-none">{g}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </a>
               </div>
@@ -128,19 +138,15 @@ export function Shows() {
                   </div>
                   {next.ticketUrl && (
                     <div className="ticket-btn flex items-center gap-1 bg-destructive text-destructive-foreground px-4 py-2 border-4 border-primary font-bold text-lg self-start">
-                      {"get tickets".split("").map((char, i) =>
-                        char === " " ? (
-                          <span key={i}>&nbsp;</span>
-                        ) : (
-                          <span
-                            key={i}
-                            className="ticket-letter"
-                            style={{ animationDelay: `${i * 0.03}s` }}
-                          >
-                            {char}
-                          </span>
-                        )
-                      )}
+                      {"tickets".split("").map((char, i) => (
+                        <span
+                          key={i}
+                          className="ticket-letter"
+                          style={{ animationDelay: `${i * 0.03}s` }}
+                        >
+                          {char}
+                        </span>
+                      ))}
                       <span className="relative ml-1 inline-flex items-center" style={{ overflow: "visible" }}>
                         <span className="ticket-arrow inline-flex"><ArrowRight size={20} /></span>
                         <span className="ticket-fire fire-1" aria-hidden="true">🔥</span>
