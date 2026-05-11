@@ -2,18 +2,39 @@ import { useState } from 'react';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import allShows from '../../data/shows.json';
 
-// Split and sort based on today's date
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+// Build a local Date from a show's date + optional time string.
+// Date-only strings (e.g. "2026-05-11") are parsed as UTC by default,
+// which shifts them into the previous day in US timezones — so we
+// parse the parts manually to get local midnight, then layer in the
+// show time if present. If there's no time, we use end-of-day (23:59)
+// so the show stays visible all day.
+function showDateTime(date: string, time?: string): Date {
+    const [year, month, day] = date.split('-').map(Number);
+    if (time) {
+        const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (match) {
+            let hours = parseInt(match[1], 10);
+            const minutes = parseInt(match[2], 10);
+            const meridiem = match[3].toUpperCase();
+            if (meridiem === 'PM' && hours !== 12) hours += 12;
+            if (meridiem === 'AM' && hours === 12) hours = 0;
+            return new Date(year, month - 1, day, hours, minutes, 0, 0);
+        }
+    }
+    // No time: keep visible until end of day
+    return new Date(year, month - 1, day, 23, 59, 59, 999);
+}
+
+const now = new Date();
 
 const upcomingShows = allShows
-    .filter((s) => new Date(s.date) >= today)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .filter((s) => showDateTime(s.date, s.time) >= now)
+    .sort((a, b) => showDateTime(a.date, a.time).getTime() - showDateTime(b.date, b.time).getTime())
     .slice(0, 2);
 
 const pastShows = allShows
-    .filter((s) => new Date(s.date) < today)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .filter((s) => showDateTime(s.date, s.time) < now)
+    .sort((a, b) => showDateTime(b.date, b.time).getTime() - showDateTime(a.date, a.time).getTime())
     .slice(0, 6);
 
 function formatDate(iso: string) {
