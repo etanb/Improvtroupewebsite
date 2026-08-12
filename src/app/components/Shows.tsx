@@ -46,6 +46,16 @@ function formatDate(iso: string) {
     });
 }
 
+// Shows synced from the rolodex.lol API carry a free-text `description`
+// instead of a structured `guests` list. Prefer description when present;
+// fall back to the old "w/ guest · guest · guest" chip style for shows
+// that only have `guests` (i.e. the hand-entered historical shows).
+type ShowDetails = { description?: string; guests?: string[] };
+
+function hasDetails(show: ShowDetails) {
+    return Boolean(show.description) || Boolean(show.guests?.length);
+}
+
 export function Shows() {
     const [next, second] = upcomingShows;
     const [hovered, setHovered] = useState(false);
@@ -190,19 +200,29 @@ export function Shows() {
                                                 </div>
                                             )}
                                         </div>
-                                        {second.guests.length > 0 && (
+                                        {hasDetails(second) && (
                                             <div className='border-t-2 border-primary pt-4'>
-                                                <span className='text-sm text-destructive font-bold mr-2'>
-                                                    w/
-                                                </span>
-                                                {second.guests.map((g, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="text-sm after:content-['_·_'] last:after:content-none"
-                                                    >
-                                                        {g}
-                                                    </span>
-                                                ))}
+                                                {second.description ? (
+                                                    <p className='text-sm whitespace-pre-line'>
+                                                        {second.description}
+                                                    </p>
+                                                ) : (
+                                                    <>
+                                                        <span className='text-sm text-destructive font-bold mr-2'>
+                                                            w/
+                                                        </span>
+                                                        {(second.guests ?? []).map(
+                                                            (g, i) => (
+                                                                <span
+                                                                    key={i}
+                                                                    className="text-sm after:content-['_·_'] last:after:content-none"
+                                                                >
+                                                                    {g}
+                                                                </span>
+                                                            ),
+                                                        )}
+                                                    </>
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -301,19 +321,29 @@ export function Shows() {
                                         </div>
                                     )}
                                 </div>
-                                <div className='border-t-2 border-primary mt-5 pt-4'>
-                                    <span className='text-sm text-destructive font-bold mr-2'>
-                                        w/
-                                    </span>
-                                    {next.guests.map((g, i) => (
-                                        <span
-                                            key={i}
-                                            className="text-sm after:content-['_·_'] last:after:content-none"
-                                        >
-                                            {g}
-                                        </span>
-                                    ))}
-                                </div>
+                                {hasDetails(next) && (
+                                    <div className='border-t-2 border-primary mt-5 pt-4'>
+                                        {next.description ? (
+                                            <p className='text-base whitespace-pre-line'>
+                                                {next.description}
+                                            </p>
+                                        ) : (
+                                            <>
+                                                <span className='text-sm text-destructive font-bold mr-2'>
+                                                    w/
+                                                </span>
+                                                {(next.guests ?? []).map((g, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className="text-sm after:content-['_·_'] last:after:content-none"
+                                                    >
+                                                        {g}
+                                                    </span>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
+                                )}
                             </a>
                         )}
 
@@ -358,12 +388,19 @@ export function Shows() {
                                     <div className='text-sm font-bold text-muted-foreground mb-3'>
                                         {show.venue}
                                     </div>
-                                    <div className='text-sm'>
-                                        <span className='text-destructive font-bold mr-1'>
-                                            w/
-                                        </span>
-                                        {show.guests.join(' · ')}
-                                    </div>
+                                    {hasDetails(show) &&
+                                        (show.description ? (
+                                            <p className='text-sm line-clamp-3 whitespace-pre-line'>
+                                                {show.description}
+                                            </p>
+                                        ) : (
+                                            <div className='text-sm'>
+                                                <span className='text-destructive font-bold mr-1'>
+                                                    w/
+                                                </span>
+                                                {(show.guests ?? []).join(' · ')}
+                                            </div>
+                                        ))}
                                 </a>
                             ))}
                         </div>

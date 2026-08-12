@@ -1,0 +1,48 @@
+name: Sync Events from rolodex.lol
+
+# Runs on a schedule, checks rolodex.lol for events not yet in shows.json,
+# and — only if there's something new — commits the update and pushes to
+# main. That push is what triggers Vercel to rebuild and redeploy, the same
+# as if you'd edited shows.json by hand and pushed it yourself.
+#
+# You can also trigger it manually from the "Actions" tab on GitHub
+# (workflow_dispatch below) to test it without waiting for the schedule.
+
+on:
+    schedule:
+        # Every hour, on the hour. GitHub schedules are UTC and can be delayed
+        # by a few minutes during high load — that's normal, not a bug.
+        - cron: '0 * * * *'
+    workflow_dispatch: {}
+
+# Needed so the job can push a commit back to the repo using the
+# auto-generated GITHUB_TOKEN, instead of a personal access token.
+permissions:
+    contents: write
+
+jobs:
+    sync:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repo
+              uses: actions/checkout@v4
+
+            - name: Set up Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+
+            - name: Run sync script
+              run: node scripts/syncEvents.mjs
+
+            - name: Commit and push shows.json if it changed
+              run: |
+                  if git diff --quiet -- src/data/shows.json; then
+                    echo "No new events — nothing to commit."
+                    exit 0
+                  fi
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add src/data/shows.json
+                  git commit -m "Sync events from rolodex.lol"
+                  git push
