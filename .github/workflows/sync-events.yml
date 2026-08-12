@@ -11,9 +11,10 @@ name: Sync Content (Events + Quote)
 
 on:
     schedule:
-        # Every hour, on the hour. GitHub schedules are UTC and can be delayed
-        # by a few minutes during high load — that's normal, not a bug.
-        - cron: '0 * * * *'
+        # Twice a day: midnight and noon UTC — 5am and 5pm Pacific during PDT
+        # (4am/4pm during PST). GitHub schedules can slip a few minutes during
+        # high load — that's normal, not a bug.
+        - cron: '0 0,12 * * *'
     workflow_dispatch: {}
 
 # Needed so the job can push a commit back to the repo using the
