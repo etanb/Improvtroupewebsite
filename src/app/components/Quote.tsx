@@ -1,12 +1,8 @@
-import { useState, useEffect } from "react";
+import quotes from "../../data/quotes.json";
 import star1 from "../../imports/star-doodle.png";
 import star2 from "../../imports/star-doodle-2.png";
 import star3 from "../../imports/star-doodle-3.png";
 import star4 from "../../imports/star-doodle-4.png";
-
-const AIRTABLE_TOKEN    = import.meta.env.VITE_AIRTABLE_TOKEN;
-const AIRTABLE_BASE_ID  = import.meta.env.VITE_AIRTABLE_BASE_ID;
-const AIRTABLE_TABLE_ID = import.meta.env.VITE_AIRTABLE_TABLE_ID;
 
 const stars = [
   { src: star1, className: "star-swoop-1", size: 44, top: "10%",   left: "5%",   opacity: 0.85 },
@@ -18,37 +14,21 @@ const stars = [
   { src: star2, className: "star-swoop-4", size: 40, bottom: "20%",right: "3%",  opacity: 0.6  },
 ];
 
-interface AirtableRecord {
-  id: string;
-  createdTime: string;
-  fields: { Subject?: string; Name?: string };
-}
+// Quotes are synced from Airtable into src/data/quotes.json by a scheduled
+// GitHub Actions job (scripts/syncQuote.mjs), the same way shows.json is
+// kept in sync with rolodex.lol. That means the array below is already
+// bundled into the page — no fetch, no loading state, no pop-in.
+//
+// The "quote of the day" rotation is still live: this is just local date
+// math against the bundled array, so which quote shows still changes daily
+// without needing a rebuild.
+const quote =
+  quotes.length > 0
+    ? quotes[Math.floor(Date.now() / 86400000) % quotes.length]
+    : null;
 
 export function Quote() {
-  const [quote, setQuote] = useState<{ text: string; author: string } | null>(null);
-
-  useEffect(() => {
-    const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`);
-    url.searchParams.set("filterByFormula", `NOT(Name="")`);
-    url.searchParams.set("pageSize", "100");
-
-    fetch(url.toString(), {
-      headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` },
-    })
-      .then((r) => r.json())
-      .then((data: { records: AirtableRecord[] }) => {
-        if (!data.records?.length) return;
-        const valid = data.records
-          .filter((r) => r.fields.Subject && r.fields.Name)
-          .sort((a, b) => new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime());
-        if (valid.length) {
-          const dayIndex = Math.floor(Date.now() / 86400000) % valid.length;
-          const picked = valid[dayIndex];
-          setQuote({ text: picked.fields.Subject!, author: picked.fields.Name! });
-        }
-      })
-      .catch(() => {});
-  }, []);
+  if (!quote) return null;
 
   return (
     <section className="bg-primary text-primary-foreground py-10 md:py-14 overflow-hidden relative">
@@ -69,18 +49,14 @@ export function Quote() {
           </div>
         </div>
 
-        {/* Fixed height container so the section doesn't jump */}
-        <div
-          className="text-center transform rotate-1 transition-opacity duration-500"
-          style={{ opacity: quote ? 1 : 0, minHeight: "8rem" }}
-        >
+        <div className="text-center transform rotate-1" style={{ minHeight: "8rem" }}>
           <p className="text-2xl md:text-4xl font-bold text-secondary leading-tight mb-6">
-            "{quote?.text}"
+            "{quote.text}"
           </p>
           <div className="flex items-center justify-center gap-4">
             <div className="h-px w-12 bg-secondary opacity-50" />
             <div>
-              <p className="font-bold text-lg">{quote?.author}</p>
+              <p className="font-bold text-lg">{quote.author}</p>
               <p className="text-sm opacity-60 tracking-wide">Late For Work</p>
             </div>
             <div className="h-px w-12 bg-secondary opacity-50" />

@@ -1,9 +1,10 @@
-name: Sync Events from rolodex.lol
+name: Sync Content (Events + Quote)
 
-# Runs on a schedule, checks rolodex.lol for events not yet in shows.json,
-# and — only if there's something new — commits the update and pushes to
-# main. That push is what triggers Vercel to rebuild and redeploy, the same
-# as if you'd edited shows.json by hand and pushed it yourself.
+# Runs on a schedule. Checks rolodex.lol for events not yet in shows.json
+# and Airtable for a new set of quotes, updates whichever files changed,
+# and — only if something actually changed — commits and pushes to main.
+# That push is what triggers Vercel to rebuild and redeploy, the same as
+# if you'd edited the files by hand and pushed them yourself.
 #
 # You can also trigger it manually from the "Actions" tab on GitHub
 # (workflow_dispatch below) to test it without waiting for the schedule.
@@ -32,17 +33,24 @@ jobs:
               with:
                   node-version-file: '.nvmrc'
 
-            - name: Run sync script
+            - name: Sync events from rolodex.lol
               run: node scripts/syncEvents.mjs
 
-            - name: Commit and push shows.json if it changed
+            - name: Sync quotes from Airtable
+              env:
+                  AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+                  AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+                  AIRTABLE_TABLE_ID: ${{ secrets.AIRTABLE_TABLE_ID }}
+              run: node scripts/syncQuote.mjs
+
+            - name: Commit and push if anything changed
               run: |
-                  if git diff --quiet -- src/data/shows.json; then
-                    echo "No new events — nothing to commit."
+                  if git diff --quiet -- src/data/shows.json src/data/quotes.json; then
+                    echo "Nothing new — nothing to commit."
                     exit 0
                   fi
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add src/data/shows.json
-                  git commit -m "Sync events from rolodex.lol"
+                  git add src/data/shows.json src/data/quotes.json
+                  git commit -m "Sync events and quote from rolodex.lol / Airtable"
                   git push
