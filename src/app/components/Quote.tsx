@@ -19,13 +19,27 @@ const stars = [
 // kept in sync with rolodex.lol. That means the array below is already
 // bundled into the page — no fetch, no loading state, no pop-in.
 //
-// The "quote of the day" rotation is still live: this is just local date
-// math against the bundled array, so which quote shows still changes daily
-// without needing a rebuild.
-const quote =
-  quotes.length > 0
-    ? quotes[Math.floor(Date.now() / 86400000) % quotes.length]
-    : null;
+// Each quote carries a permanent `slot` number assigned the first time it
+// was ever synced (see syncQuote.mjs). We pick "today's" quote by slot,
+// not by array position/length, so adding a brand-new quote never shifts
+// which day any existing quote shows on. If the quote that owns today's
+// slot ever disappears (e.g. deleted from Airtable), we fall back to the
+// nearest lower slot that still exists, wrapping around if needed, rather
+// than showing nothing.
+function pickTodaysQuote() {
+  if (quotes.length === 0) return null;
+  const sorted = [...quotes].sort((a, b) => a.slot - b.slot);
+  const totalSlots = sorted[sorted.length - 1].slot + 1;
+  const targetSlot = Math.floor(Date.now() / 86400000) % totalSlots;
+
+  for (let i = sorted.length - 1; i >= 0; i--) {
+    if (sorted[i].slot <= targetSlot) return sorted[i];
+  }
+  // targetSlot is lower than every remaining slot (e.g. slot 0 got deleted) — wrap around.
+  return sorted[sorted.length - 1];
+}
+
+const quote = pickTodaysQuote();
 
 export function Quote() {
   if (!quote) return null;

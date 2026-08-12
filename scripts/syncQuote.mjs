@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 // Syncs src/data/quotes.json with Airtable, so Quote.tsx can render the
 // "Troupe Wisdom" quote instantly from the static bundle instead of
-// fetching Airtable in the visitor's browser on every page load (which is
-// what caused the pop-in fade you didn't like).
+// fetching Airtable in the visitor's browser on every page load.
 //
-// Quote.tsx keeps the "rotates to a new quote once a day" behavior — it
-// still computes `dayIndex = floor(Date.now() / 86400000) % quotes.length`
-// on the client — but that's pure local math against the bundled array now,
-// no network round trip, so there's nothing to wait on and nothing to fade in.
+// Each quote gets a permanent `slot` number the first time it's ever
+// synced, matched by Airtable's stable record `id`. Slots are never
+// reassigned for a quote that's already been seen before — a new quote
+// just gets the next unused slot number. That means adding a new quote
+// never shifts which day everyone else's existing quotes show on; see
+// Quote.tsx for how `slot` is turned into "today's quote."
 //
 // Requires these as environment variables (set as GitHub Actions repo
 // secrets — see .github/workflows/sync-events.yml):
@@ -48,30 +49,46 @@ async function main() {
     }
     const data = await res.json();
 
-    const valid = (data.records ?? [])
+    const fetched = (data.records ?? [])
         .filter((r) => r.fields.Subject && r.fields.Name)
         .sort(
             (a, b) =>
                 new Date(a.createdTime).getTime() -
                 new Date(b.createdTime).getTime(),
-        )
-        .map((r) => ({ text: r.fields.Subject, author: r.fields.Name }));
+        );
 
-    if (valid.length === 0) {
+    if (fetched.length === 0) {
         console.log('No valid quotes found on Airtable — leaving quotes.json untouched.');
         return;
     }
 
+    // Load whatever slot assignments already exist so we can preserve them.
     const existingRaw = await readFile(QUOTES_JSON_PATH, 'utf-8').catch(() => '[]');
     const existing = JSON.parse(existingRaw);
+    const existingById = new Map(
+        existing.filter((q) => q.id != null).map((q) => [q.id, q]),
+    );
 
-    if (JSON.stringify(existing) === JSON.stringify(valid)) {
+    let nextSlot =
+        existing.length > 0
+            ? Math.max(...existing.map((q) => q.slot ?? -1)) + 1
+            : 0;
+
+    const merged = fetched.map((r) => {
+        const prior = existingById.get(r.id);
+        const slot = prior ? prior.slot : nextSlot++;
+        return { id: r.id, text: r.fields.Subject, author: r.fields.Name, slot };
+    });
+
+    merged.sort((a, b) => a.slot - b.slot);
+
+    if (JSON.stringify(existing) === JSON.stringify(merged)) {
         console.log('quotes.json already up to date.');
         return;
     }
 
-    await writeFile(QUOTES_JSON_PATH, JSON.stringify(valid, null, 2) + '\n');
-    console.log(`Wrote ${valid.length} quote(s) to quotes.json.`);
+    await writeFile(QUOTES_JSON_PATH, JSON.stringify(merged, null, 2) + '\n');
+    console.log(`Wrote ${merged.length} quote(s) to quotes.json.`);
 }
 
 main().catch((err) => {
