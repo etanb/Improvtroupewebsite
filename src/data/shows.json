@@ -1,24 +1,49 @@
 [
   {
+    "date": "2026-08-10",
+    "time": "6:30 PM",
+    "venue": "Black Lodge",
+    "ticketUrl": "https://link.dice.fm/m493665e830e?dice_id=m493665e830e",
+    "description": "Join us for a bar night ft. Late For Work Improv\n\nw/ special guests: Burlesque by Anya Knees, Improv 9000, Lindsey Anderson stand-up comedy, and Alexei Sebastian Cifrese.\n\nCome hang, have a drink, and laugh! Limited seating available plus standing room."
+  },
+  {
     "date": "2026-07-16",
     "time": "7:00 PM",
     "venue": "Shanghai Room",
     "ticketUrl": "https://www.theshanghairoom.com/calendar",
-    "guests": ["Hopscotch Improv"]
+    "guests": [
+      "Hopscotch Improv"
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "time": "6:30 PM",
+    "venue": "Jules Maes Saloon",
+    "ticketUrl": "https://tickets.venuepilot.com/e/late-for-work-improv-2026-07-13-jules-maes-seattle-3395d1",
+    "description": "Our July show will be at Jules Maes Saloon, with very special guests:\n- Formerly Known As\n- Heave-Ho! Improvised Sea Shanties\n- Comedic Karaoke with Shimmer & Shimmy\n- A Laure Yamagawa character piece"
   },
   {
     "date": "2026-07-13",
     "time": "7:00 PM",
     "venue": "Jules Maes",
     "ticketUrl": "https://tickets.venuepilot.com/e/late-for-work-improv-2026-07-13-jules-maes-seattle-3395d1",
-    "guests": ["FKA", "Heave Ho!", "Shimmer and Shimmy"]
+    "guests": [
+      "FKA",
+      "Heave Ho!",
+      "Shimmer and Shimmy"
+    ]
   },
   {
     "date": "2026-06-08",
     "time": "6:30 PM",
     "venue": "The Black Lodge",
     "ticketUrl": "https://link.dice.fm/ge8ce70c9aa4",
-    "guests": ["MARKET Improv", "Gavyn Rings", "Burlesque by Anya Knees", "Laure Yamagawa"]
+    "guests": [
+      "MARKET Improv",
+      "Gavyn Rings",
+      "Burlesque by Anya Knees",
+      "Laure Yamagawa"
+    ]
   },
   {
     "date": "2026-05-13",
@@ -32,48 +57,73 @@
     "time": "6:30 PM",
     "venue": "Black Lodge",
     "ticketUrl": "https://link.dice.fm/Ddf6324b2d6d",
-    "guests": ["Regis Dudley", "Just Happy to Be Here", "Laure Yamagawa", "OLD AF"]
+    "guests": [
+      "Regis Dudley",
+      "Just Happy to Be Here",
+      "Laure Yamagawa",
+      "OLD AF"
+    ]
   },
   {
     "date": "2026-04-13",
     "time": "7:00 PM",
     "venue": "Black Lodge",
     "ticketUrl": "",
-    "guests": ["Hopscotch Improv", "Improv 9000", "Laure Yamagawa"]
+    "guests": [
+      "Hopscotch Improv",
+      "Improv 9000",
+      "Laure Yamagawa"
+    ]
   },
   {
     "date": "2026-03-27",
     "time": "7:00 PM",
     "venue": "Seattle Open Arts Place",
     "ticketUrl": "",
-    "guests": ["OLD AF"]
+    "guests": [
+      "OLD AF"
+    ]
   },
   {
     "date": "2026-03-13",
     "time": "7:30 PM",
     "venue": "The Drama Room",
     "ticketUrl": "",
-    "guests": ["Just Happy to Be Here", "Unidentified Female Object", "They Might Be Ghosts"]
+    "guests": [
+      "Just Happy to Be Here",
+      "Unidentified Female Object",
+      "They Might Be Ghosts"
+    ]
   },
   {
     "date": "2026-03-09",
     "time": "7:00 PM",
     "venue": "Black Lodge",
     "ticketUrl": "",
-    "guests": ["Jone Dehuff", "ABC&D Improv", "Laure Yamagawa"]
+    "guests": [
+      "Jone Dehuff",
+      "ABC&D Improv",
+      "Laure Yamagawa"
+    ]
   },
   {
     "date": "2026-02-22",
     "time": "7:00 PM",
     "venue": "Vermillion Art Gallery and Bar",
     "ticketUrl": "",
-    "guests": ["Dollbrick"]
+    "guests": [
+      "Dollbrick"
+    ]
   },
   {
     "date": "2026-02-09",
     "time": "7:30 PM",
     "venue": "Black Lodge",
     "ticketUrl": "",
-    "guests": ["Stay Silly", "Certified Nonsense: A Clown Collective", "Laure Yamagawa"]
+    "guests": [
+      "Stay Silly",
+      "Certified Nonsense: A Clown Collective",
+      "Laure Yamagawa"
+    ]
   }
 ]
