@@ -91,16 +91,13 @@ Only emails from the following addresses are accepted. The Gmail filter enforces
 
 | Email | Display Name |
 |-------|-------------|
+| cburnitz@gmail.com | Christine |
 | annroepke@gmail.com | Annie |
 | ants.jia.games@gmail.com | Anton |
-| bethanybeal@gmail.com | Bethany |
 | bstrukus@gmail.com | Ben |
 | lyamagawa@gmail.com | Laure |
 | thecoby0@gmail.com | Coby |
-| trcorey98@gmail.com | Thomas |
-| uwagray326@gmail.com | Anita |
 | etan.berkowitz@gmail.com | Etan |
-| sampclaney@gmail.com | Sam |
 
 #### Adding a new member
 
